@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WeatherTestApp</string>
+    <string name="search_hint">Поиск города</string>
+    <string name="temperature">+%d°C</string>
+
+    <string name="weather_param_realfeel">RealFeel %d°C</string>
+    <string name="weather_param_humidity">Влажность %d%%</string>
+    <string name="weather_param_pressure">Давление %d мм рт. ст</string>
+    <string name="weather_param_wind_speed">Скорость ветра %d км/ч</string>
+</resources>
