@@ -33,15 +33,6 @@ class SearchFragment: Fragment(R.layout.fragment_search_city), TextWatcher {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cityModelHelper.getCityModel()?.let {
-            findNavController().navigate(
-                SearchFragmentDirections.actionSearchFragmentToWeatherFragment(
-                    it.key,
-                    it.name
-                )
-            )
-        }
-
         vm = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         adapter = SearchAdapter(object : SearchAdapter.OnCitySelectCallback {
             override fun onSelected(cityModel: CityModel) {
@@ -63,6 +54,16 @@ class SearchFragment: Fragment(R.layout.fragment_search_city), TextWatcher {
         arguments?.let {
             it.getString("name")?.let { name ->
                 vm.searchCity(name)
+            }
+        }
+        if(arguments?.getString("name") == null) {
+            cityModelHelper.getCityModel()?.let {
+                findNavController().navigate(
+                    SearchFragmentDirections.actionSearchFragmentToWeatherFragment(
+                        it.key,
+                        it.name
+                    )
+                )
             }
         }
     }

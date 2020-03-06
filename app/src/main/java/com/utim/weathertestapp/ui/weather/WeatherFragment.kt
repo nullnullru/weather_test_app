@@ -9,8 +9,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.utim.weathertestapp.R
+import com.utim.weathertestapp.data.local.CityModelHelper
 import com.utim.weathertestapp.databinding.FragmentWeatherBinding
 import kotlinx.android.synthetic.main.fragment_weather.*
+import javax.inject.Inject
 
 class WeatherFragment : Fragment(R.layout.fragment_weather) {
     private lateinit var vm: WeatherViewModel
@@ -56,7 +58,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
             swipe_layout.isRefreshing = false
             vm.refreshWeather()
         }
-        
+
         vm.loadWeather()
     }
 }

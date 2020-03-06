@@ -18,4 +18,8 @@ class CityModelHelper(context: Context) {
         val cityModel = CityModel(sp.getString("name", "")!!, sp.getInt("key", 0))
         return if(cityModel.key == 0) null else cityModel
     }
+
+    fun clear() {
+        sp.edit().clear().apply()
+    }
 }
