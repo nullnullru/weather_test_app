@@ -56,10 +56,7 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
             swipe_layout.isRefreshing = false
             vm.refreshWeather()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
+        
         vm.loadWeather()
     }
 }
