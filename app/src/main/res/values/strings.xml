@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">WeatherTestApp</string>
     <string name="search_hint">Поиск города</string>
-    <string name="temperature">+%d°C</string>
+    <string name="temperature">%d°C</string>
+
+    <string name="error_getting_data">Ошибка получения данных!</string>
 
     <string name="weather_param_realfeel">RealFeel %d°C</string>
     <string name="weather_param_humidity">Влажность %d%%</string>

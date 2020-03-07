@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.utim.weathertestapp.App
 import com.utim.weathertestapp.R
 import com.utim.weathertestapp.data.local.CityModelHelper
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_search_city.*
 import javax.inject.Inject
 
 
-class SearchFragment: Fragment(R.layout.fragment_search_city), TextWatcher {
+class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
     private lateinit var vm: SearchViewModel
     private lateinit var adapter: SearchAdapter
     private lateinit var binding: FragmentSearchCityBinding
@@ -47,16 +48,12 @@ class SearchFragment: Fragment(R.layout.fragment_search_city), TextWatcher {
                 )
             }
         })
-        vm.getSearchResultLiveData().observe(this, Observer { list ->
-            adapter.update(list)
-            recycler.layoutManager?.scrollToPosition(0)
-        })
         arguments?.let {
             it.getString("name")?.let { name ->
                 vm.searchCity(name)
             }
         }
-        if(arguments?.getString("name") == null) {
+        if (arguments?.getString("name") == null) {
             cityModelHelper.getCityModel()?.let {
                 findNavController().navigate(
                     SearchFragmentDirections.actionSearchFragmentToWeatherFragment(
@@ -78,6 +75,19 @@ class SearchFragment: Fragment(R.layout.fragment_search_city), TextWatcher {
         })
         vm.getLastSearchedCityLiveData().observe(this, Observer {
             binding.isEmpty = it.isEmpty()
+        })
+        vm.getSearchResultLiveData().observe(this, Observer { list ->
+            adapter.update(list)
+            recycler.layoutManager?.scrollToPosition(0)
+        })
+        vm.getErrorCounterLiveData().observe(this, Observer {
+            if (it > 0) {
+                Snackbar.make(
+                    view,
+                    getString(R.string.error_getting_data),
+                    resources.getInteger(android.R.integer.config_longAnimTime)
+                ).show()
+            }
         })
         recycler.adapter = adapter
 

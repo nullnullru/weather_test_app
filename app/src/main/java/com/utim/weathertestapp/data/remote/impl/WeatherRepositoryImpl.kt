@@ -5,25 +5,34 @@ import com.utim.weathertestapp.data.model.WeatherParamModel
 import com.utim.weathertestapp.data.model.WeatherParamType
 import com.utim.weathertestapp.data.remote.ApiService
 import com.utim.weathertestapp.data.remote.WeatherRepository
+import java.lang.Exception
 
 class WeatherRepositoryImpl(private val apiService: ApiService) : WeatherRepository {
     override suspend fun getWeather(locationKey: Int): WeatherModel? {
-        val apiModel = apiService.getWeather(locationKey).execute().body()
+        var model: WeatherModel? = null
 
-        if(apiModel != null && apiModel.isNotEmpty()) {
-            return WeatherModel(
-                "",
-                apiModel[0].temperature.metric.value.toInt(),
-                apiModel[0].weatherText,
-                listOf(
-                    WeatherParamModel(WeatherParamType.REALFEEL, apiModel[0].realFeel.metric.value.toInt()),
-                    WeatherParamModel(WeatherParamType.HUMIDITY, apiModel[0].humidity),
-                    WeatherParamModel(WeatherParamType.WIND_SPEED, apiModel[0].wind.speed.value.toInt()),
-                    WeatherParamModel(WeatherParamType.PRESSURE, apiModel[0].pressure.metric.value.toInt())
-                )
-            )
+        try {
+            val response = apiService.getWeather(locationKey).execute()
+
+            if(response.code() == 200 && response.isSuccessful) {
+                response.body()?.let {
+                    model = WeatherModel(
+                        "",
+                        it[0].temperature.metric.value.toInt(),
+                        it[0].weatherText,
+                        listOf(
+                            WeatherParamModel(WeatherParamType.REALFEEL, it[0].realFeel.metric.value.toInt()),
+                            WeatherParamModel(WeatherParamType.HUMIDITY, it[0].humidity),
+                            WeatherParamModel(WeatherParamType.WIND_SPEED, it[0].wind.speed.value.toInt()),
+                            WeatherParamModel(WeatherParamType.PRESSURE, it[0].pressure.metric.value.toInt())
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
-        return null
+        return model
     }
 }

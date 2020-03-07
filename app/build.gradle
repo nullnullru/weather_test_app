@@ -27,11 +27,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_URL", "\"http://dataservice.accuweather.com/\""
-            buildConfigField "String", "API_KEY", "\"A3dFNkD41103tDQkhIl4EUOG8d7TbH5V\""
+            buildConfigField "String", "API_KEY", "\"LQ4GMr6pIrnAeHdYvvVpViuTNve0QgYm\""
         }
         debug {
             buildConfigField "String", "API_URL", "\"http://dataservice.accuweather.com/\""
-            buildConfigField "String", "API_KEY", "\"A3dFNkD41103tDQkhIl4EUOG8d7TbH5V\""
+            buildConfigField "String", "API_KEY", "\"LQ4GMr6pIrnAeHdYvvVpViuTNve0QgYm\""
         }
     }
     compileOptions {

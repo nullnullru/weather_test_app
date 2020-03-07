@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
                 android:padding="8dp"
-                android:background="@android:color/transparent"
+                android:background="@drawable/bg_search_line"
                 android:src="@drawable/ic_search"
                 android:tint="#555"/>
         </LinearLayout>
