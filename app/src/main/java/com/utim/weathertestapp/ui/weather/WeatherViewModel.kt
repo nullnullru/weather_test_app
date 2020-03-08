@@ -79,5 +79,6 @@ class WeatherViewModel: ViewModel() {
         }
 
         isRefreshing.postValue(false)
+        isLoading.postValue(false)
     }
 }
