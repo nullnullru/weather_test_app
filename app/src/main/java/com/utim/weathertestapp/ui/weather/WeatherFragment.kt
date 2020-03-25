@@ -50,6 +50,12 @@ class WeatherFragment : Fragment(R.layout.fragment_weather) {
                     getString(R.string.error_getting_data),
                     Snackbar.LENGTH_LONG
                 ).show()
+            } else if(state == ViewModelState.LOCAL) {
+                Snackbar.make(
+                    view,
+                    getString(R.string.local_data_loaded),
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
 
             if(state == ViewModelState.LOADED || state == ViewModelState.LOCAL) {
