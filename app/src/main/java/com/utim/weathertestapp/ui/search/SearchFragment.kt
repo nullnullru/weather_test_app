@@ -3,7 +3,6 @@ package com.utim.weathertestapp.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -15,6 +14,7 @@ import com.utim.weathertestapp.App
 import com.utim.weathertestapp.R
 import com.utim.weathertestapp.data.local.CityModelHelper
 import com.utim.weathertestapp.data.model.CityModel
+import com.utim.weathertestapp.data.model.ViewModelState
 import com.utim.weathertestapp.databinding.FragmentSearchCityBinding
 import kotlinx.android.synthetic.main.fragment_search_city.*
 import javax.inject.Inject
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
     private lateinit var vm: SearchViewModel
     private lateinit var adapter: SearchAdapter
-    private lateinit var binding: FragmentSearchCityBinding
+    private var binding: FragmentSearchCityBinding? = null
 
     @Inject
     lateinit var cityModelHelper: CityModelHelper
@@ -67,29 +67,28 @@ class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = DataBindingUtil.bind(view)!!
-        binding.isEmpty = true
+        binding = DataBindingUtil.bind(view)
+        recycler.adapter = adapter
 
-        vm.getLoadingLiveData().observe(this, Observer { loading ->
-            binding.isLoading = loading
-        })
-        vm.getLastSearchedCityLiveData().observe(this, Observer {
-            binding.isEmpty = it.isEmpty()
-        })
-        vm.getSearchResultLiveData().observe(this, Observer { list ->
-            adapter.update(list)
-            recycler.layoutManager?.scrollToPosition(0)
-        })
-        vm.getErrorCounterLiveData().observe(this, Observer {
-            if (it > 0) {
+        vm.getStateLiveData().observe(this, Observer { state ->
+            binding?.state = state
+            if(state == ViewModelState.FAILED) {
                 Snackbar.make(
                     view,
                     getString(R.string.error_getting_data),
-                    resources.getInteger(android.R.integer.config_longAnimTime)
+                    Snackbar.LENGTH_LONG
                 ).show()
             }
         })
-        recycler.adapter = adapter
+
+        vm.getLastSearchedCityLiveData().observe(this, Observer {
+            binding?.isEmpty = it.isEmpty()
+        })
+
+        vm.getDataLiveData().observe(this, Observer { list ->
+            adapter.update(list)
+            recycler.layoutManager?.scrollToPosition(0)
+        })
 
         edit_query.setText(vm.getLastSearchedCityLiveData().value)
         edit_query.addTextChangedListener(this)
@@ -104,6 +103,6 @@ class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         vm.searchCity(s.toString())
-        binding.isEmpty = s.toString().isEmpty()
+        binding?.isEmpty = s.toString().isEmpty()
     }
 }

@@ -9,12 +9,12 @@ class CityLocalRepositoryImpl: CityLocalRepository {
         const val BOOK_NAME = "CITIES"
     }
 
-    override suspend fun getCities(query: String): List<CityModel> {
-        return Paper.book(BOOK_NAME).read<List<CityModel>>(query, ArrayList())
-    }
+    override suspend fun getCities(query: String): List<CityModel>? {
+        if(Paper.book(BOOK_NAME).contains(query)) {
+            return Paper.book(BOOK_NAME).read<List<CityModel>>(query, ArrayList())
+        }
 
-    override fun hasResponse(query: String): Boolean {
-        return Paper.book(BOOK_NAME).allKeys.contains(query)
+        return null
     }
 
     override fun saveResponse(query: String, cities: List<CityModel>) {

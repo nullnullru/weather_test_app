@@ -2,15 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <variable
-            name="isLoading"
-            type="Boolean" />
-        <variable
-            name="isRefreshing"
-            type="Boolean" />
+        <import type="com.utim.weathertestapp.data.model.ViewModelState"/>
         <variable
             name="model"
             type="com.utim.weathertestapp.data.model.WeatherModel" />
+        <variable
+            name="state"
+            type="ViewModelState" />
     </data>
 
     <FrameLayout
@@ -25,20 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:visibleIf="@{!isLoading}">
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="72dp"
-                    android:indeterminate="true"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:visibleIf="@{isRefreshing}" />
+                app:visibleIf="@{state == ViewModelState.LOADED || state == ViewModelState.LOCAL}">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
@@ -105,7 +90,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginTop="32dp"
-                    android:text="Дополнительная информация"
+                    android:text="@string/additional_information"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:maxLines="1"
@@ -132,7 +117,7 @@
             android:id="@+id/frame_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:visibleIf="@{isLoading}">
+            app:visibleIf="@{state == ViewModelState.LOADING}">
 
             <include layout="@layout/fragment_weather_placeholder" />
         </FrameLayout>

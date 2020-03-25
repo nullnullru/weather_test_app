@@ -11,12 +11,12 @@ class WeatherLocalRepositoryImpl: WeatherLocalRepository {
         const val BOOK_NAME = "WEATHER"
     }
 
-    override suspend fun getWeather(key: Int): WeatherModel {
-        return Paper.book(BOOK_NAME).read<WeatherModel>(key.toString())
-    }
+    override suspend fun getWeather(key: Int): WeatherModel? {
+        if(Paper.book(BOOK_NAME).contains(key.toString())) {
+            return Paper.book(BOOK_NAME).read<WeatherModel>(key.toString())
+        }
 
-    override fun hasResponse(key: Int): Boolean {
-        return Paper.book(BOOK_NAME).allKeys.contains(key.toString())
+        return null
     }
 
     override fun saveResponse(key: Int, weatherModel: WeatherModel) {
