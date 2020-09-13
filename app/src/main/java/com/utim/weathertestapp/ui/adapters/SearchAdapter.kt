@@ -1,6 +1,5 @@
-package com.utim.weathertestapp.ui.search
+package com.utim.weathertestapp.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil

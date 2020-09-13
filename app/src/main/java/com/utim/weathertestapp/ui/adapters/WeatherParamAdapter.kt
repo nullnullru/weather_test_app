@@ -1,4 +1,4 @@
-package com.utim.weathertestapp.ui.weather
+package com.utim.weathertestapp.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -37,10 +37,11 @@ class WeatherParamAdapter : RecyclerView.Adapter<WeatherParamAdapter.WeatherPara
         result.dispatchUpdatesTo(this)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WeatherParamViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_weather_param, parent, false),
-        templates
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        WeatherParamViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_weather_param, parent, false),
+            templates
+        )
 
     override fun getItemCount() = params.size
 

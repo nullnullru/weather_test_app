@@ -1,4 +1,4 @@
-package com.utim.weathertestapp.ui.search
+package com.utim.weathertestapp.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
@@ -13,9 +13,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.utim.weathertestapp.App
 import com.utim.weathertestapp.R
 import com.utim.weathertestapp.data.local.CityModelHelper
-import com.utim.weathertestapp.data.model.CityModel
-import com.utim.weathertestapp.data.model.ViewModelState
+import com.utim.weathertestapp.data.model.*
 import com.utim.weathertestapp.databinding.FragmentSearchCityBinding
+import com.utim.weathertestapp.ui.adapters.SearchAdapter
+import com.utim.weathertestapp.ui.viewmodels.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search_city.*
 import javax.inject.Inject
 
@@ -35,7 +36,8 @@ class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vm = ViewModelProviders.of(this).get(SearchViewModel::class.java)
-        adapter = SearchAdapter(object : SearchAdapter.OnCitySelectCallback {
+        adapter = SearchAdapter(object :
+            SearchAdapter.OnCitySelectCallback {
             override fun onSelected(cityModel: CityModel) {
                 cityModelHelper.saveCityModel(cityModel)
                 edit_query?.clearFocus()
@@ -70,24 +72,30 @@ class SearchFragment : Fragment(R.layout.fragment_search_city), TextWatcher {
         binding = DataBindingUtil.bind(view)
         recycler.adapter = adapter
 
-        vm.getStateLiveData().observe(this, Observer { state ->
+        vm.getStateLiveData().observe(viewLifecycleOwner, Observer { state ->
             binding?.state = state
-            if(state == ViewModelState.FAILED) {
-                Snackbar.make(
-                    view,
-                    getString(R.string.error_getting_data),
-                    Snackbar.LENGTH_LONG
-                ).show()
+
+            when(state) {
+                is FailedState -> {
+                    Snackbar.make(
+                        view,
+                        getString(R.string.error_getting_data),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is LoadedState -> {
+                    adapter.update(state.data)
+                    recycler.layoutManager?.scrollToPosition(0)
+                }
+                is LocalState -> {
+                    adapter.update(state.data)
+                    recycler.layoutManager?.scrollToPosition(0)
+                }
             }
         })
 
-        vm.getLastSearchedCityLiveData().observe(this, Observer {
+        vm.getLastSearchedCityLiveData().observe(viewLifecycleOwner, Observer {
             binding?.isEmpty = it.isEmpty()
-        })
-
-        vm.getDataLiveData().observe(this, Observer { list ->
-            adapter.update(list)
-            recycler.layoutManager?.scrollToPosition(0)
         })
 
         edit_query.setText(vm.getLastSearchedCityLiveData().value)

@@ -5,14 +5,17 @@ import com.utim.weathertestapp.data.model.WeatherParamModel
 import com.utim.weathertestapp.data.model.WeatherParamType
 import com.utim.weathertestapp.data.remote.ApiService
 import com.utim.weathertestapp.data.remote.WeatherRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.lang.Exception
 
 class WeatherRepositoryImpl(private val apiService: ApiService) : WeatherRepository {
-    override suspend fun getWeather(locationKey: Int): WeatherModel? {
-        try {
-            val response = apiService.getWeather(locationKey).execute()
-            response.body()?.let {
-                return@getWeather WeatherModel(
+
+    override fun getWeather(locationKey: Int): Single<WeatherModel> {
+        return apiService.getWeather(locationKey)
+            .map {
+                WeatherModel(
                     "",
                     it[0].temperature.metric.value.toInt(),
                     it[0].weatherText,
@@ -33,10 +36,7 @@ class WeatherRepositoryImpl(private val apiService: ApiService) : WeatherReposit
                     )
                 )
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return null
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

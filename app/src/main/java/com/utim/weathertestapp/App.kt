@@ -1,7 +1,6 @@
 package com.utim.weathertestapp
 
 import android.app.Application
-import android.content.Context
 import com.utim.weathertestapp.di.AppComponent
 import com.utim.weathertestapp.di.AppModule
 import com.utim.weathertestapp.di.DaggerAppComponent

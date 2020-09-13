@@ -1,13 +1,14 @@
-package com.utim.weathertestapp.ui.search
+package com.utim.weathertestapp.ui.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.utim.weathertestapp.App
 import com.utim.weathertestapp.data.local.CityLocalRepository
 import com.utim.weathertestapp.data.model.CityModel
-import com.utim.weathertestapp.data.model.ViewModelPriority
+import com.utim.weathertestapp.data.model.LoadedState
+import com.utim.weathertestapp.data.model.LoadingPriority
 import com.utim.weathertestapp.data.remote.CityRepository
-import com.utim.weathertestapp.ui.base.BaseDataViewModel
+import io.reactivex.rxjava3.functions.Predicate
 import javax.inject.Inject
 
 class SearchViewModel : BaseDataViewModel<List<CityModel>>() {
@@ -27,13 +28,14 @@ class SearchViewModel : BaseDataViewModel<List<CityModel>>() {
     fun searchCity(cityName: String) {
         lastSearchedCity.value = cityName
         if(cityName.isNotEmpty()) {
-            loadData(ViewModelPriority.LOCAL)
+            loadData(LoadingPriority.LOCAL)
         } else {
-            data.value = ArrayList()
+            postState(LoadedState(listOf()))
         }
     }
 
+    override fun filter(): Predicate<List<CityModel>> = Predicate { it.isNotEmpty() }
     override fun saveToLocal(data: List<CityModel>) = localRepository.saveResponse(lastSearchedCity.value!!, data)
-    override suspend fun getData() = repository.getCities(lastSearchedCity.value!!)
-    override suspend fun getLocalData() = localRepository.getCities(lastSearchedCity.value!!)
+    override fun getData() = repository.getCities(lastSearchedCity.value!!)
+    override fun getLocalData() = localRepository.getCities(lastSearchedCity.value!!)
 }

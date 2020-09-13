@@ -1,10 +1,9 @@
 package com.utim.weathertestapp.di
 
-import com.utim.weathertestapp.ui.search.SearchFragment
-import com.utim.weathertestapp.ui.search.SearchViewModel
-import com.utim.weathertestapp.ui.weather.WeatherFragment
-import com.utim.weathertestapp.ui.weather.WeatherParamAdapter
-import com.utim.weathertestapp.ui.weather.WeatherViewModel
+import com.utim.weathertestapp.ui.fragments.SearchFragment
+import com.utim.weathertestapp.ui.viewmodels.SearchViewModel
+import com.utim.weathertestapp.ui.adapters.WeatherParamAdapter
+import com.utim.weathertestapp.ui.viewmodels.WeatherViewModel
 import dagger.Component
 import javax.inject.Singleton
 

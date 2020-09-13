@@ -2,13 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <import type="com.utim.weathertestapp.data.model.ViewModelState"/>
+        <import type="com.utim.weathertestapp.data.model.UIState"/>
+        <import type="com.utim.weathertestapp.data.model.LoadedState"/>
+        <import type="com.utim.weathertestapp.data.model.LocalState"/>
+        <import type="com.utim.weathertestapp.data.model.LoadingState"/>
         <variable
             name="model"
             type="com.utim.weathertestapp.data.model.WeatherModel" />
         <variable
             name="state"
-            type="ViewModelState" />
+            type="UIState" />
     </data>
 
     <FrameLayout
@@ -23,7 +26,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:visibleIf="@{state == ViewModelState.LOADED || state == ViewModelState.LOCAL}">
+                app:visibleIfHasData="@{state}">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
@@ -42,7 +45,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="230dp"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
                         android:paddingStart="16dp"
@@ -118,7 +121,7 @@
             android:id="@+id/frame_placeholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:visibleIf="@{state == ViewModelState.LOADING}">
+            app:visibleIfLoading="@{state}">
 
             <include layout="@layout/fragment_weather_placeholder" />
         </FrameLayout>

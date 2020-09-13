@@ -2,10 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-        <import type="com.utim.weathertestapp.data.model.ViewModelState"/>
+        <import type="com.utim.weathertestapp.data.model.UIState"/>
         <variable
             name="state"
-            type="ViewModelState" />
+            type="UIState" />
         <variable
             name="isEmpty"
             type="Boolean" />
@@ -45,30 +45,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/image_search"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_search"
-            android:tint="#999"
-            app:visibleIf="@{isEmpty &amp;&amp; state != ViewModelState.LOADING}"
+            app:invisibleIfLoading="@{state}"
             app:layout_constraintBottom_toBottomOf="@+id/edit_query"
             app:layout_constraintEnd_toEndOf="@+id/edit_query"
-            app:layout_constraintTop_toTopOf="@+id/edit_query" />
+            app:layout_constraintTop_toTopOf="@+id/edit_query" >
 
-        <ImageButton
-            android:id="@+id/button_clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_clear"
-            android:tint="#222"
-            app:visibleIf="@{!isEmpty &amp;&amp; state != ViewModelState.LOADING}"
-            app:layout_constraintBottom_toBottomOf="@+id/edit_query"
-            app:layout_constraintEnd_toEndOf="@+id/edit_query"
-            app:layout_constraintTop_toTopOf="@+id/edit_query" />
+            <ImageView
+                android:id="@+id/image_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_search"
+                android:tint="#999"
+                app:visibleIf="@{isEmpty}"/>
+
+            <ImageButton
+                android:id="@+id/button_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_clear"
+                android:tint="#222"
+                app:visibleIf="@{!isEmpty}" />
+
+        </FrameLayout>
 
         <ProgressBar
             android:id="@+id/progress"
@@ -76,9 +79,10 @@
             android:layout_height="32dp"
             android:layout_marginEnd="12dp"
             android:indeterminate="true"
-            app:visibleIf="@{state == ViewModelState.LOADING}"
+            app:visibleIfLoading="@{state}"
             app:layout_constraintBottom_toBottomOf="@+id/edit_query"
             app:layout_constraintEnd_toEndOf="@+id/edit_query"
             app:layout_constraintTop_toTopOf="@+id/edit_query" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
