@@ -5,6 +5,7 @@ A very simple weather application. You can choose a city to load the weather. It
 
 <h2> Libraries:  </h2>
 - RxJava3 <br>
+- Dagger2 <br>
 - MVVM <br>
 - Android navigation component <br>
 - DataBinding  <br> 
