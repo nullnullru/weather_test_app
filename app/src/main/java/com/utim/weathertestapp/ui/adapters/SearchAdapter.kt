@@ -12,6 +12,7 @@ import com.utim.weathertestapp.util.diff.CityDiffCallback
 
 class SearchAdapter(private val callback: OnCitySelectCallback? = null) :
     RecyclerView.Adapter<SearchAdapter.SearchItemViewHolder>() {
+
     private var cities: List<CityModel> = ArrayList()
 
     fun update(newData: List<CityModel>){

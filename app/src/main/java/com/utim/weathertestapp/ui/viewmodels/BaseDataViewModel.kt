@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.utim.weathertestapp.data.model.*
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.Predicate
+import io.reactivex.rxjava3.disposables.Disposable
 
 abstract class BaseDataViewModel<T> : ViewModel() {
 
@@ -17,18 +17,19 @@ abstract class BaseDataViewModel<T> : ViewModel() {
 
     fun getStateLiveData(): LiveData<UIState<T>> = state
 
-    protected fun loadData(priority: LoadingPriority = LoadingPriority.REMOTE) {
-        state.value = LoadingState()
+    protected fun loadData(priority: LoadingPriority = LoadingPriority.REMOTE): Disposable {
 
-        val nextPriority = if(priority == LoadingPriority.REMOTE) LoadingPriority.LOCAL
+        val nextPriority = if (priority == LoadingPriority.REMOTE) LoadingPriority.LOCAL
         else LoadingPriority.REMOTE
 
-        getDataWithPriority(priority)
-            .onErrorResumeNext {
-                getDataWithPriority(nextPriority)
+        return modifyLoadObservable(
+                getDataWithPriority(priority).onErrorResumeNext { getDataWithPriority(nextPriority) }
+            )
+            .doOnSubscribe {
+                state.value = LoadingState()
             }
             .subscribe({
-                when(it.priority) {
+                when (it.priority) {
                     LoadingPriority.LOCAL -> postState(LocalState(it.data))
                     LoadingPriority.REMOTE -> postState(LoadedState(it.data))
                 }
@@ -37,27 +38,30 @@ abstract class BaseDataViewModel<T> : ViewModel() {
             })
     }
 
-    protected open fun postState(state: UIState<T>) {
-        this.state.postValue(state)
-    }
-
     private fun getDataWithPriority(priority: LoadingPriority): Single<Response<T>> {
-        return if(isLocalPriority(priority))
+        return if (isLocalPriority(priority))
             getLocalData()
                 .map { Response(it, priority) }
         else getData()
-                .map { Response(it, priority) }
-                .doOnSuccess { saveToLocal(it.data) }
+            .map { Response(it, priority) }
+            .doOnSuccess { saveToLocal(it.data) }
     }
 
     private fun isLocalPriority(priority: LoadingPriority): Boolean {
         return priority == LoadingPriority.LOCAL
     }
 
-    protected open fun filter(): Predicate<T> =  Predicate { it != null }
+    protected open fun modifyLoadObservable(single: Single<Response<T>>): Single<Response<T>> {
+        return single
+    }
+
+    protected open fun postState(state: UIState<T>) {
+        this.state.postValue(state)
+    }
+
     protected abstract fun saveToLocal(data: T)
     protected abstract fun getData(): Single<T>
     protected abstract fun getLocalData(): Single<T>
 
-    private class Response<T>(val data: T, val priority: LoadingPriority)
+    protected class Response<T>(val data: T, val priority: LoadingPriority)
 }
